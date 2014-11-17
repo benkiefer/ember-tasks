@@ -1,0 +1,12 @@
+{
+  "name": "ember-tasks",
+  "version": "0.0.0",
+  "authors": [
+    "benkiefer"
+  ],
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "jquery": "~2.1.1"
+  }
+}
