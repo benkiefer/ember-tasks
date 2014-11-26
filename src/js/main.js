@@ -1,7 +1,1 @@
-function hello () {
-    console.log('hello');
-}
-
-function goodbye () {
-    console.log('goodbye');
-}
+window.App = Ember.Application.create();
