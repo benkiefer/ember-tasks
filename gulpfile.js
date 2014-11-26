@@ -6,6 +6,7 @@ var gulp = require('gulp'),
     lint = require('gulp-jshint'),
     mainBowerFiles = require('main-bower-files'),
     minifycss = require('gulp-minify-css'),
+    karma = require('karma').server,
     uglify = require('gulp-uglify');
 
 var config = {
@@ -44,6 +45,13 @@ gulp.task('clean-css', function (cb) {
 gulp.task('watch', function () {
     gulp.watch(config.scripts, ['scripts']);
     gulp.watch(config.css, ['css']);
+});
+
+gulp.task('test', function (done) {
+  karma.start({
+    configFile: __dirname + '/karma.conf.js',
+    singleRun: true
+  }, done);
 });
 
 gulp.task('default', ['watch', 'scripts', 'css']);
