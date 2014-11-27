@@ -1,5 +1,5 @@
 ## Ember Tasks
-========
+--------------
 
 Really simple ember task example.
 
