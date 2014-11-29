@@ -1,11 +1,9 @@
-App.Task = Ember.Object.extend({
+var Task = Ember.Object.extend({
     name: ''
-});
-
-App.Task.reopenClass({
+}).reopenClass({
     tasks: [],
     add: function(hash) {
-        var task = App.Task.create(hash);
+        var task = Task.create(hash);
         this.tasks.pushObject(task);
     },
     remove: function(task) {
@@ -15,3 +13,5 @@ App.Task.reopenClass({
         return this.tasks;
     }
 });
+
+export default Task;

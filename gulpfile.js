@@ -1,39 +1,62 @@
 var gulp = require('gulp'),
     debug = require('gulp-debug'),
     concat = require('gulp-concat'),
-    concatcss = require('gulp-concat-css'),
+    concatCss = require('gulp-concat-css'),
     del = require('del'),
+    es6ModuleTranspiler = require("gulp-es6-module-transpiler"),
+    filter = require('gulp-filter'),
     gulpIf = require('gulp-if'),
-    lint = require('gulp-jshint'),
-    minifycss = require('gulp-minify-css'),
-    karma = require('karma').server,
-    uglify = require('gulp-uglify'),
     handlebars = require('gulp-handlebars'),
+    lint = require('gulp-jshint'),
+    karma = require('karma').server,
+    minifycss = require('gulp-minify-css'),
+    uglify = require('gulp-uglify'),
     wrap = require('gulp-wrap'),
     declare = require('gulp-declare');
-
 
 var config = {
     notMinifiedJs: '!**/*.min.js',
     templates: ['templates/**/*.hbs'],
-    scripts: [
-        'bower_components/jquery/dist/jquery.min.js',
-        'bower_components/handlebars/handlebars.min.js',
-        'bower_components/ember/ember.min.js',
-        'src/js/**/*.js'
+    lint: [
+        'app/js/**/*.js',
+        'test/**/*.js'
     ],
-    css: ['src/css/**/*.css']
+    scripts: [
+        'vendor/jquery/dist/jquery.min.js',
+        'vendor/es5-shim/es5-shim.min.js',
+        'vendor/handlebars/handlebars.min.js',
+        'vendor/ember/ember.js',
+        'vendor/ember-loader/loader.js',
+        'vendor/ember-resolver/dist/ember-resolver.js',
+        'app/js/**/*.js'
+    ],
+    css: ['app/css/*.css']
 };
 
 gulp.task('lint', function () {
-    return gulp.src(config.scripts)
-        .pipe(gulpIf(config.notMinifiedJs, lint()))
+    return gulp.src(config.lint)
+        .pipe(lint())
         .pipe(lint.reporter('default'));
 });
 
 gulp.task('scripts', ['clean-js', 'lint'], function () {
+    var vendorFilter = filter(function (file) {
+        return file.base.indexOf('vendor') === -1;
+    });
+    var minJsFilter = filter(function (file) {
+        return file.base.indexOf('.min.js') === -1;
+    });
+
     return gulp.src(config.scripts)
-        .pipe(gulpIf(config.notMinifiedJs, uglify()))
+        .pipe(vendorFilter)
+        .pipe(es6ModuleTranspiler({
+            type: "amd",
+            prefix: "js"
+        }))
+        .pipe(vendorFilter.restore())
+        .pipe(minJsFilter)
+        .pipe(uglify())
+        .pipe(minJsFilter.restore())
         .pipe(concat('dist.min.js'))
         .pipe(gulp.dest('build/js'));
 });
@@ -41,7 +64,7 @@ gulp.task('scripts', ['clean-js', 'lint'], function () {
 gulp.task('css', ['clean-css'], function () {
     return gulp.src(config.css)
         .pipe(minifycss())
-        .pipe(concatcss('dist.min.css'))
+        .pipe(concatCss('dist.min.css'))
         .pipe(gulp.dest('build/css'));
 });
 

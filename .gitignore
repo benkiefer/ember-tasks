@@ -3,7 +3,7 @@
 *.ipr
 *.iws
 
-bower_components
+vendor
 node_modules
 vendor
 build

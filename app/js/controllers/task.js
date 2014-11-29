@@ -1,13 +1,17 @@
-App.TaskController = Ember.ArrayController.extend({
+import Task from 'js/models/task';
+
+var TaskController = Ember.ArrayController.extend({
     actions: {
         add: function() {
             var name = {
                 name: this.get('name')
             };
-            App.Task.add(name);
+            Task.add(name);
         },
         remove: function(task) {
-            App.Task.remove(task);
+            Task.remove(task);
         }
     }
 });
+
+export default TaskController;
